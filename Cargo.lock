@@ -38,6 +38,7 @@ dependencies = [
  "riscv",
  "sbi-rt",
  "spin",
+ "tock-registers",
 ]
 
 [[package]]
@@ -150,6 +151,12 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
+
+[[package]]
+name = "tock-registers"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0293f99756f16ff352cc78c99673766a305bdb5ed7652e78df649e9967c885a"
 
 [[package]]
 name = "unicode-ident"

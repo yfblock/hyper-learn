@@ -11,3 +11,4 @@ spin = { version = "0.9.8", features = ["mutex"] }
 [target.'cfg(target_arch = "riscv64")'.dependencies]
 riscv = "0.14.0"
 sbi-rt = { version = "0.0.3", features = ["legacy"] }
+tock-registers = "0.10.0"

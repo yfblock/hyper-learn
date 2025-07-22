@@ -1,8 +1,8 @@
 pub mod console;
-
-use core::arch::global_asm;
+pub mod csrs;
 
 use crate::arch::clear_bss;
+use core::arch::global_asm;
 
 global_asm!(include_str!("boot.S"));
 
@@ -22,15 +22,15 @@ extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
         panic!("no HSM extension exist on current SBI environment");
     }
     // Test Code
-    let hgatp: usize;
+    let hstatus: usize;
     unsafe {
         core::arch::asm!(
-            "csrr {0}, hgatp",
-            out(reg) hgatp,
+            "csrr {0}, hstatus",
+            out(reg) hstatus,
             options(nomem, nostack, preserves_flags)
         );
     }
-    log::info!("Current hgatp: {:#x}", hgatp);
+    log::info!("Current hstatus: {:#x}", hstatus);
     // if !detect::detect_h_extension() {
     //     panic!("no RISC-V hypervisor H extension on current environment")
     // }
