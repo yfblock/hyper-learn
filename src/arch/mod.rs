@@ -2,8 +2,10 @@ use core::arch::global_asm;
 
 #[macro_use]
 pub mod console;
-
+pub mod config;
+pub mod pagetable;
 pub mod riscv64;
+pub mod addr;
 
 global_asm!(
     "
