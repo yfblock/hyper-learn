@@ -11,7 +11,7 @@ fn main(hart_id: usize) {
 
     // Initialize the memory allocator
     mem::heap::init_allocator();
-    
+
     unsafe extern "C" {
         fn _end();
     }

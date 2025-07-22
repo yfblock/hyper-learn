@@ -1,6 +1,6 @@
 {
   "rust-analyzer.check.allTargets": false,
-  "rust-analyzer.cargo.target": "riscv64imac-unknown-none-elf",
+  "rust-analyzer.cargo.target": "rust-target/riscv64imach-unknown-none.json",
   "rust-analyzer.check.features": "all",
   "rust-analyzer.check.extraArgs": []
 }
