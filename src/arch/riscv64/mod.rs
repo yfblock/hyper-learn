@@ -3,7 +3,7 @@ pub mod csrs;
 
 use crate::arch::{
     clear_bss,
-    riscv64::csrs::{HCOUNTEREN, hedeleg, hideleg, hvip},
+    riscv64::csrs::{HCOUNTEREN, VSATP, hedeleg, hideleg, hvip},
 };
 use core::arch::global_asm;
 use riscv::register::{sie, sstatus};
@@ -60,6 +60,8 @@ extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
         sie::set_ssoft();
         sie::set_stimer();
     }
+
+    VSATP.set(0); // Set VSATP to 0 for now, assuming no virtual memory
 
     // if !detect::detect_h_extension() {
     //     panic!("no RISC-V hypervisor H extension on current environment")
