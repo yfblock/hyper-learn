@@ -1,6 +1,8 @@
 use core::arch::global_asm;
 
 #[macro_use]
+pub mod macros;
+#[macro_use]
 pub mod console;
 pub mod addr;
 pub mod config;

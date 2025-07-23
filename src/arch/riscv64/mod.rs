@@ -1,8 +1,13 @@
 pub mod console;
 pub mod csrs;
 
-use crate::arch::clear_bss;
+use crate::arch::{
+    clear_bss,
+    riscv64::csrs::{HCOUNTEREN, hedeleg, hideleg, hvip},
+};
 use core::arch::global_asm;
+use riscv::register::{sie, sstatus};
+use tock_registers::interfaces::{Readable, Writeable};
 
 global_asm!(include_str!("boot.S"));
 
@@ -31,6 +36,31 @@ extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
         );
     }
     log::info!("Current hstatus: {:#x}", hstatus);
+    log::info!("Current sstatus: {:#x?}", sstatus::read().spp());
+    log::info!(
+        "Current hedeleg: {:#x?}",
+        csrs::HEDELEG.read(hedeleg::ENV_CALL_FROM_U_OR_VU)
+    );
+
+    // hedeleg: delegate some synchronous exceptions
+    csrs::HEDELEG.write(
+        hedeleg::INST_ADDR_MISALIGN::SET
+            + hedeleg::BREAKPOINT::SET
+            + hedeleg::ENV_CALL_FROM_U_OR_VU::SET
+            + hedeleg::INST_PAGE_FAULT::SET
+            + hedeleg::LOAD_PAGE_FAULT::SET
+            + hedeleg::STORE_PAGE_FAULT::SET,
+    );
+    csrs::HIDELEG.write(hideleg::VSSIP::SET + hideleg::VSTIP::SET + hideleg::VSEIP::SET);
+    csrs::HVIP.write(hvip::VSSIP::SET + hvip::VSTIP::SET + hvip::VSEIP::SET);
+    HCOUNTEREN.set(0xffff_ffff);
+
+    unsafe {
+        sie::set_sext();
+        sie::set_ssoft();
+        sie::set_stimer();
+    }
+
     // if !detect::detect_h_extension() {
     //     panic!("no RISC-V hypervisor H extension on current environment")
     // }
