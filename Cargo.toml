@@ -14,3 +14,4 @@ riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
 riscv-decode = { git = "https://github.com/KuangjuX/riscv-decode.git" }
 sbi-rt = { version = "0.0.3", features = ["legacy"] }
 tock-registers = "0.10.0"
+bitflags = "2.9.1"
