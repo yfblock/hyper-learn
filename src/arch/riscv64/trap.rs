@@ -1,4 +1,7 @@
-use riscv::interrupt::Trap;
+use riscv::register::{
+    htinst,
+    scause::{Exception, Trap},
+};
 use tock_registers::interfaces::Readable;
 
 use crate::arch::riscv64::csrs::{HSTATUS, hstatus};
@@ -11,13 +14,20 @@ pub extern "C" fn handle_trap() {
     let sstatus = riscv::register::sstatus::read();
     let scause = riscv::register::scause::read();
     log::info!("sstatus spp: {:#x?}", sstatus.spp());
-    log::info!("scause: {:#x?}", scause);
-    unsafe {
-        log::info!("hstatus: {:#x?}", HSTATUS.read(hstatus::SPV));
-    }
+    log::info!("scause: {:#x?}", scause.cause());
+    log::info!("hstatus: {:#x?}", HSTATUS.read(hstatus::SPV));
+    let htinst = htinst::read();
+    log::info!(
+        "htinst: {:#x}   {:?}",
+        htinst,
+        riscv_decode::decode(htinst as u32)
+    );
     match scause.cause() {
         Trap::Interrupt(interrupt) => {
             log::info!("Interrupt: {:?}", interrupt);
+        }
+        Trap::Exception(Exception::Breakpoint) => {
+            log::info!("Exception BreakPoint");
         }
         Trap::Exception(exception) => {
             log::info!("Exception: {:?}", exception);

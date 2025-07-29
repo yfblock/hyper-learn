@@ -4,10 +4,10 @@ pub mod trap;
 
 use crate::arch::{
     clear_bss,
-    riscv64::csrs::{HCOUNTEREN, VSATP, hedeleg, hideleg, hvip},
+    riscv64::csrs::{HCOUNTEREN, VSATP, hedeleg},
 };
 use core::arch::global_asm;
-use riscv::register::{sie, sstatus};
+use riscv::register::{hideleg, hvip, sie, sstatus};
 use tock_registers::interfaces::{Readable, Writeable};
 
 global_asm!(include_str!("boot.S"));
@@ -53,8 +53,14 @@ extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
             + hedeleg::LOAD_PAGE_FAULT::SET
             + hedeleg::STORE_PAGE_FAULT::SET,
     );
-    csrs::HIDELEG.write(hideleg::VSSIP::SET + hideleg::VSTIP::SET + hideleg::VSEIP::SET);
-    csrs::HVIP.write(hvip::VSSIP::SET + hvip::VSTIP::SET + hvip::VSEIP::SET);
+    unsafe {
+        hvip::set_vseip();
+        hvip::set_vssip();
+        hvip::set_vstip();
+        hideleg::set_eip();
+        hideleg::set_sip();
+        hideleg::set_tip();
+    }
     HCOUNTEREN.set(0xffff_ffff);
 
     unsafe {

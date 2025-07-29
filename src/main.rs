@@ -29,10 +29,7 @@ fn panic_handler(_info: &core::panic::PanicInfo) -> ! {
 mod guest_test {
     use core::arch::naked_asm;
 
-    use riscv::register::sstatus;
-    use tock_registers::interfaces::Writeable;
-
-    use crate::arch::riscv64::csrs::{HSTATUS, hstatus};
+    use riscv::register::{hstatus, sstatus};
 
     #[unsafe(naked)]
     pub unsafe extern "C" fn guest_main() {
@@ -50,9 +47,8 @@ mod guest_test {
         log::info!("test enter guest code");
         unsafe {
             sstatus::set_spp(sstatus::SPP::Supervisor);
-            HSTATUS.write(hstatus::SPV::SET);
+            hstatus::set_spv();
         }
-
         unsafe {
             core::arch::asm!("
                 la   a0, {guest_main}
