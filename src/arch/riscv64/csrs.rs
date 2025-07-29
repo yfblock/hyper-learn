@@ -110,3 +110,4 @@ pub const HIDELEG: ReadWriteCsr<hideleg::Register, 0x603> = ReadWriteCsr::new();
 pub const HVIP: ReadWriteCsr<hvip::Register, 0x645> = ReadWriteCsr::new();
 pub const HCOUNTEREN: ReadWriteCsr<(), 0x606> = ReadWriteCsr::new();
 pub const VSATP: ReadWriteCsr<(), 0x280> = ReadWriteCsr::new();
+pub const HSTATUS: ReadWriteCsr<hstatus::Register, 0x600> = ReadWriteCsr::new();

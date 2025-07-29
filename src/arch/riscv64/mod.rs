@@ -1,5 +1,6 @@
 pub mod console;
 pub mod csrs;
+pub mod trap;
 
 use crate::arch::{
     clear_bss,
@@ -10,6 +11,7 @@ use riscv::register::{sie, sstatus};
 use tock_registers::interfaces::{Readable, Writeable};
 
 global_asm!(include_str!("boot.S"));
+global_asm!(include_str!("trap.S"));
 
 #[unsafe(no_mangle)]
 extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
