@@ -1,17 +1,21 @@
 pub mod console;
+pub mod context;
 pub mod csrs;
 pub mod trap;
 
 use crate::arch::{
     clear_bss,
-    riscv64::csrs::{HCOUNTEREN, VSATP, hedeleg},
+    riscv64::{
+        context::CONTEXT_SIZE,
+        csrs::{HCOUNTEREN, VSATP, hedeleg},
+    },
 };
 use core::arch::global_asm;
 use riscv::register::{hideleg, hvip, sie, sstatus};
 use tock_registers::interfaces::{Readable, Writeable};
 
 global_asm!(include_str!("boot.S"));
-global_asm!(include_str!("trap.S"));
+global_asm!(include_str!("trap.S"), context_size = const CONTEXT_SIZE);
 
 #[unsafe(no_mangle)]
 extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {

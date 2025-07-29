@@ -37,7 +37,7 @@ mod guest_test {
             "
             li a0, 0x1234
             li a1, 0x5678
-            ebreak
+            ecall
             j .
         "
         );
