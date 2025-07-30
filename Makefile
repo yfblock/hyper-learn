@@ -1,6 +1,8 @@
 QEMU_ARGS := -machine virt \
 	-nographic \
 	-kernel target/riscv64imach-unknown-none/release/hyper-learn \
+	-device virtio-net-device,netdev=net0 \
+	-netdev user,id=net0 \
 	-m 1G
 
 ifeq ($(QEMU_LOG), y)
