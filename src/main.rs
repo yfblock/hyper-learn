@@ -47,8 +47,9 @@ mod guest_test {
 
     pub fn enter_guest_test(stack_top: usize) {
         log::info!("test enter guest code");
-        let file = include_bytes!("../testcases/uboot/u-boot.bin");
+        let file = include_bytes!("../testcases/uboot/uboot.bin");
         let dtb = include_bytes!("../testcases/uboot/u-boot.dtb");
+        // let file = include_bytes!("../testcases/rcore-tutorial/rCore-Tutorial-v3.bin");
         unsafe {
             core::ptr::copy_nonoverlapping(file.as_ptr(), 0x90200000 as *mut u8, file.len());
 
