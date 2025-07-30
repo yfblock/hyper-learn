@@ -1,4 +1,7 @@
-QEMU_ARGS := -machine virt -nographic -kernel target/riscv64imach-unknown-none/release/hyper-learn
+QEMU_ARGS := -machine virt \
+	-nographic \
+	-kernel target/riscv64imach-unknown-none/release/hyper-learn \
+	-m 1G
 
 ifeq ($(QEMU_LOG), y)
 	QEMU_ARGS += -D qemu.log -d in_asm,int,pcall,cpu_reset,guest_errors

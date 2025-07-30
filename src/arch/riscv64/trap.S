@@ -91,11 +91,17 @@
 .type _trap_handler, @function
 .p2align 2
 _trap_handler:
+    csrrw   sp, sscratch, sp        # swap(sscratch, sp)
+    bne     sp, zero, .Luser        # if sp != 0 then goto .Luser
+    csrr    sp, sscratch            # else sp = sscratch
+
+.Luser:
     addi    sp, sp, -{context_size}
     SAVE_GENERAL_REGS
 
     LDCSR   sstatus, t0, 32
-    LDCSR   sepc,    t1, 33
+    LDCSR   sepc,    t0, 33
+    LDCSR   hstatus, t0, 36
 
     mv      a0, sp
 
@@ -105,8 +111,9 @@ _trap_handler:
 .global vmenter
 .type vmenter, @function
 vmenter:
+    STCSR   hstatus, t0, 36
     STCSR   sstatus, t0, 32
-    STCSR   sepc,    t1, 33
+    STCSR   sepc,    t0, 33
 
     LOAD_GENERAL_REGS
 
