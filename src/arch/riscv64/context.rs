@@ -39,4 +39,6 @@ impl TrapContext {
     impl_field!(set_sp, sp, x[2]);
     impl_field!(set_pc, pc, sepc);
     impl_field!(set_ksp, ksp, ksp);
+    impl_field!(set_a0, a0, x[10]);
+    impl_field!(set_a1, a1, x[11]);
 }

@@ -47,14 +47,22 @@ mod guest_test {
 
     pub fn enter_guest_test(stack_top: usize) {
         log::info!("test enter guest code");
+        let file = include_bytes!("../testcases/uboot/u-boot.bin");
+        let dtb = include_bytes!("../testcases/uboot/u-boot.dtb");
         unsafe {
+            core::ptr::copy_nonoverlapping(file.as_ptr(), 0x90200000 as *mut u8, file.len());
+
             let ctx = ((stack_top - CONTEXT_SIZE) as *mut TrapContext)
                 .as_mut()
                 .unwrap();
             *ctx = TrapContext::new();
             ctx.sstatus.set_spp(sstatus::SPP::Supervisor);
             ctx.hstatus.set_spv(true);
-            ctx.sepc = guest_main as usize;
+            // ctx.sepc = guest_main as usize;
+            ctx.set_pc(0x90200000);
+            ctx.set_a0(0);
+            ctx.set_a1(dtb.as_ptr() as usize);
+
             ctx.x[2] = stack_top;
             sstatus::set_spp(sstatus::SPP::Supervisor);
             hstatus::set_spv();
@@ -67,13 +75,6 @@ mod guest_test {
                 context_size = const CONTEXT_SIZE,
                 options(noreturn)
             );
-
-            // core::arch::asm!(
-            //     "la   a0, {guest_main}",
-            //     "csrw sepc, a0",
-            //     "sret",
-            //     guest_main = sym guest_main
-            // );
         }
     }
 }
