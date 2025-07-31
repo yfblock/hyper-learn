@@ -5,12 +5,9 @@ pub mod pagetable;
 pub mod sbi;
 pub mod trap;
 
-use crate::arch::{
-    clear_bss,
-    riscv64::{
-        context::CONTEXT_SIZE,
-        csrs::{HCOUNTEREN, VSATP, hedeleg},
-    },
+use crate::arch::riscv64::{
+    context::CONTEXT_SIZE,
+    csrs::{HCOUNTEREN, VSATP, hedeleg},
 };
 use core::arch::global_asm;
 use riscv::register::{hideleg, hvip, sie};
@@ -22,7 +19,6 @@ global_asm!(include_str!("trap.S"), context_size = const CONTEXT_SIZE);
 #[unsafe(no_mangle)]
 extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
     // Handle external interrupts here
-    clear_bss();
     println!("Booting RISC-V hypervisor...");
     super::console::log_init();
     log::info!(

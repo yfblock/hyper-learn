@@ -40,7 +40,6 @@ SECTIONS
 
     .bss ALIGN(4K): {
         _load_end = .;
-        *(.bss.bstack .bss.bstack.*)
         _sbss = .;
         *(.bss .bss.*)
         *(.sbss .sbss.*)
