@@ -101,6 +101,7 @@ _trap_handler:
 
     LDCSR   sstatus, t0, 32
     LDCSR   sepc,    t0, 33
+    LDCSR   hgatp,   t0, 34
     LDCSR   hstatus, t0, 36
 
     mv      a0, sp
@@ -116,6 +117,8 @@ vmenter:
     STCSR   hstatus, t0, 36
     STCSR   sstatus, t0, 32
     STCSR   sepc,    t0, 33
+    STCSR   hgatp,   t0, 34
+    hfence.gvma
 
     LOAD_GENERAL_REGS
 

@@ -1,6 +1,7 @@
 use core::fmt::Debug;
 
 use riscv::register::{
+    hgatp::Hgatp,
     hstatus::Hstatus,
     sstatus::{self, Sstatus},
 };
@@ -24,7 +25,7 @@ pub struct TrapContext {
     /// CSR sepc
     pub sepc: usize,
     /// Addr of Page Table
-    pub hgatp: usize,
+    pub hgatp: Hgatp,
     /// kernel stack
     pub ksp: usize,
     /// CSR hstatus
@@ -54,7 +55,7 @@ impl TrapContext {
             x: [0; 32],
             sstatus: sstatus::read(),
             sepc: 0,
-            hgatp: 0,
+            hgatp: Hgatp::from_bits(0),
             ksp: 0,
             hstatus: Hstatus::from_bits(0),
         }
@@ -64,7 +65,7 @@ impl TrapContext {
         unsafe {
             core::arch::asm!(
                 "mv sp, {stack_top}",
-                "csrw sstatus, sp",
+                "csrw sscratch, sp",
                 "addi sp, sp, -{context_size}",
                 "j  vmenter",
                 stack_top = in(reg) stack_top,
