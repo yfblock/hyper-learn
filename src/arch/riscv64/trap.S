@@ -106,6 +106,8 @@ _trap_handler:
     mv      a0, sp
 
     call    handle_trap
+
+    j       vmenter
 .size _trap_handler, . - _trap_handler
 
 .global vmenter

@@ -59,6 +59,7 @@ version = "0.1.0"
 dependencies = [
  "bitflags 2.9.1",
  "buddy_system_allocator",
+ "include_bytes_aligned",
  "log",
  "riscv",
  "riscv-decode",
@@ -66,6 +67,12 @@ dependencies = [
  "spin",
  "tock-registers",
 ]
+
+[[package]]
+name = "include_bytes_aligned"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ee796ad498c8d9a1d68e477df8f754ed784ef875de1414ebdaf169f70a6a784"
 
 [[package]]
 name = "lazy_static"

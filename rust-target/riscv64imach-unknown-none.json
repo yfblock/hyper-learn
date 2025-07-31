@@ -19,7 +19,7 @@
     "tier": 2
   },
   "panic-strategy": "abort",
-  "relocation-model": "static",
+  "relocation-model": "pie",
   "supported-sanitizers": [
     "shadow-call-stack",
     "kernel-address"

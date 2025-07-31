@@ -3,7 +3,7 @@ QEMU_ARGS := -machine virt \
 	-kernel target/riscv64imach-unknown-none/release/hyper-learn \
 	-device virtio-net-device,netdev=net0 \
 	-netdev user,id=net0 \
-	-m 1G
+	-m 3G
 
 ifeq ($(QEMU_LOG), y)
 	QEMU_ARGS += -D qemu.log -d in_asm,int,pcall,cpu_reset,guest_errors

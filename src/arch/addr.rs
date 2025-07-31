@@ -94,6 +94,20 @@ impl VirtAddr {
         self.0
     }
 
+    pub const fn page_offset(&self) -> usize {
+        self.0 % PAGE_SIZE
+    }
+
+    pub const fn page_idx(&self, level: usize) -> usize {
+        let value = match level {
+            0 => self.0 / PAGE_SIZE,
+            1 => (self.0 / PAGE_SIZE) >> 9,
+            2 => (self.0 / PAGE_SIZE) >> 18,
+            _ => panic!("Invalid page level"),
+        };
+        value & 0x1FF // 9 bits for each level
+    }
+
     #[inline]
     pub fn get_ptr<T>(&self) -> *const T {
         self.0 as *const T

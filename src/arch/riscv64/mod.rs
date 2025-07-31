@@ -1,6 +1,8 @@
 pub mod console;
 pub mod context;
 pub mod csrs;
+pub mod pagetable;
+pub mod sbi;
 pub mod trap;
 
 use crate::arch::{
@@ -11,8 +13,8 @@ use crate::arch::{
     },
 };
 use core::arch::global_asm;
-use riscv::register::{hideleg, hvip, sie, sstatus};
-use tock_registers::interfaces::{Readable, Writeable};
+use riscv::register::{hideleg, hvip, sie};
+use tock_registers::interfaces::Writeable;
 
 global_asm!(include_str!("boot.S"));
 global_asm!(include_str!("trap.S"), context_size = const CONTEXT_SIZE);
@@ -32,21 +34,6 @@ extern "C" fn rust_main(hart_id: usize, dtb_ptr: usize) {
     if sbi_rt::probe_extension(sbi_rt::Hsm).is_unavailable() {
         panic!("no HSM extension exist on current SBI environment");
     }
-    // Test Code
-    let hstatus: usize;
-    unsafe {
-        core::arch::asm!(
-            "csrr {0}, hstatus",
-            out(reg) hstatus,
-            options(nomem, nostack, preserves_flags)
-        );
-    }
-    log::info!("Current hstatus: {:#x}", hstatus);
-    log::info!("Current sstatus: {:#x?}", sstatus::read().spp());
-    log::info!(
-        "Current hedeleg: {:#x?}",
-        csrs::HEDELEG.read(hedeleg::ENV_CALL_FROM_U_OR_VU)
-    );
 
     // hedeleg: delegate some synchronous exceptions
     csrs::HEDELEG.write(
