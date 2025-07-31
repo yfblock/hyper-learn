@@ -23,13 +23,8 @@ fn main(hart_id: usize) {
     mem::frame::add_frame_range((_end as usize).div_ceil(PAGE_SIZE) * PAGE_SIZE, 0x88000000);
 
     let ksp_frame_ptr = mem::frame::frame_alloc(KERNEL_STACK_SIZE / PAGE_SIZE);
-    let vmsp_frame_ptr = mem::frame::frame_alloc(VM_STACK_SIZE / PAGE_SIZE);
     ksp_frame_ptr.slice_mut_with_len(KERNEL_STACK_SIZE).fill(0);
-    vmsp_frame_ptr.slice_mut_with_len(VM_STACK_SIZE).fill(0);
-    guest_test::enter_guest_test(
-        ksp_frame_ptr.raw() + KERNEL_STACK_SIZE,
-        vmsp_frame_ptr.raw() + VM_STACK_SIZE,
-    );
+    guest_test::enter_guest_test(ksp_frame_ptr.raw() + KERNEL_STACK_SIZE);
 }
 
 #[panic_handler]
@@ -44,7 +39,7 @@ mod guest_test {
 
     use crate::arch::riscv64::context::{CONTEXT_SIZE, TrapContext};
 
-    pub fn enter_guest_test(ksp_top: usize, vmsp_top: usize) {
+    pub fn enter_guest_test(ksp_top: usize) {
         log::info!("test enter guest code");
         let file = include_bytes!("../testcases/uboot/u-boot.bin.1");
         let dtb = include_bytes_aligned!(16, "../testcases/uboot/u-boot.dtb");
@@ -63,7 +58,6 @@ mod guest_test {
             ctx.set_pc(0x90200000);
             ctx.set_a0(0);
             ctx.set_a1(dtb.as_ptr() as usize);
-            ctx.set_sp(vmsp_top);
             ctx.first_enter(ksp_top)
         }
     }

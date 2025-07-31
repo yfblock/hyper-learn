@@ -2,5 +2,6 @@
   "rust-analyzer.check.allTargets": false,
   "rust-analyzer.cargo.target": "rust-target/riscv64imach-unknown-none.json",
   "rust-analyzer.check.features": "all",
-  "rust-analyzer.check.extraArgs": ["-Zbuild-std=core,alloc"]
+  "rust-analyzer.check.extraArgs": ["-Zbuild-std=core,alloc"],
+  "editor.formatOnSave": true
 }

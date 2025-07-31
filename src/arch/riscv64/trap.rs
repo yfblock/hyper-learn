@@ -1,6 +1,7 @@
 use riscv::register::{
     htinst,
     scause::{Exception, Trap},
+    stval,
 };
 use tock_registers::interfaces::Readable;
 
@@ -20,6 +21,7 @@ pub extern "C" fn handle_trap(ctx: &mut TrapContext) {
     log::info!("sstatus spp: {:#x?}", sstatus.spp());
     log::info!("scause: {:x?}", scause.cause());
     log::info!("hstatus: {:#x?}", HSTATUS.read(hstatus::SPV));
+    log::info!("stval: {:#x?}", stval::read());
     let htinst = htinst::read();
     log::info!(
         "htinst: {:#x}   {:?}",
